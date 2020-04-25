@@ -5,13 +5,15 @@
             .grid {
                 display: grid;
                 width: 100%;
-                background: aqua;
+                /* background: aqua;
                 border-width: 5px;
                 font-size: 40px;
-                border-color: black;
+                border: green;
+                border-style: solid; */
             }
+
             .newDiv {
-                /* background-color:aqua; */
+                background-color:silver;
             }
 
             .hoverDiv {
@@ -21,50 +23,75 @@
         </style>
     </head>
     <body>
-        <div><button class="resetButton">Reset</button></div>
-    <div class="grid"></div>
+    <div><button class="resetButton">Reset</button></div>
+    <div><button id="resizeButton">Resize</button></div>
+    <div id="mainGrid" class="grid"></div>
 
 
 
 
     <script>
+        function setGrid (eachSide){
 
-        let eachSide = 50;
-        let width = document.documentElement.clientWidth
-        let height = document.documentElement.clientHeight
-        let vSmall;
-        if (width>height) {
-            vSmall = "vh"
-        } else vSmall = "vw"
-
-        console.log(width);
-        let div = document.querySelector(".grid");
-        for (let i=0;i<Math.pow(eachSide,2); i++){
-            let newDiv = document.createElement("div");
-            newDiv.classList.add("newDiv")
-            div.appendChild(newDiv);
+            let div = document.querySelector(".grid");
+            div.innerHTML = "";
+            for (let i=0;i<Math.pow(eachSide,2); i++){
+                let newDiv = document.createElement("div");
+                newDiv.classList.add("newDiv")
+                div.appendChild(newDiv);
+            }
+            resizeWindow(eachSide);
+            enableMouse();
         }
-        let wide=100/eachSide;
-        div.style.gridTemplateColumns =  `repeat(${eachSide}, ${wide}${vSmall})`;
-        div.style.gridTemplateRows =  `repeat(${eachSide}, ${wide}${vSmall})`;
         
-        let divs = document.querySelectorAll(".newDiv");
-        divs.forEach((eachDiv) => {
+        function resizeWindow(eachSide) {
+            let div = document.querySelector(".grid");
+            let width = document.documentElement.clientWidth-25;
+            let height = document.documentElement.clientHeight-25;
+            let vSmall;
+            let pxLimit;
+            if (width>height) {
+                vSmall = "vh";
+                pxLimit = height;
+            } else {
+                vSmall = "vw"
+                pxLimit = width;
+            }
+            let wide=100/eachSide;
+            div.style.gridTemplateColumns =  `repeat(${eachSide}, ${wide}${vSmall})`;
+            div.style.gridTemplateRows =  `repeat(${eachSide}, ${wide}${vSmall})`;
+            div.style.width =  `${pxLimit}px`;
+            div.style.height =  `${pxLimit}px`;
+        }
 
-            eachDiv.addEventListener('mouseover', (e) => {
-                eachDiv.classList.add("hoverDiv")
+        function enableMouse(){
+            let divs = document.querySelectorAll(".newDiv");
+            divs.forEach((eachDiv) => {
+
+                eachDiv.addEventListener('mouseover', (e) => {
+                    eachDiv.classList.add("hoverDiv")
+                });
+            });
+        }
+        setGrid(4)
+
+        let button = document.querySelector(".resetButton")
+        button.addEventListener('click', (e) =>{
+            let divs = document.querySelectorAll(".newDiv");
+        
+            divs.forEach((each) => {
+                each.classList.remove("hoverDiv");
             });
         });
-        let button = document.querySelector("button")
-        button.addEventListener('click', (e) =>{
-           divs.forEach((each) => {
-                each.classList.remove("hoverDiv");
-           });
-        });
 
+        let resize = document.querySelector("#resizeButton");
+        resize.addEventListener('click', (e)=> {
+            eachSide = prompt('How many squares for each side?', "20");
+            setGrid(eachSide);
+        });
 
     </script>
     </body>
-
-
-</html>
+    
+    
+    </html>
